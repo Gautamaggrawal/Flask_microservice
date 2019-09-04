@@ -1,11 +1,9 @@
 import json
-
 from flask import request
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from . import create_app, database
-from .models import Cats
+from .models import KeyValue, User, db
 from flask_login import login_required, current_user
-
 app = create_app()
 
 
@@ -13,29 +11,34 @@ app = create_app()
 @login_required
 def fetch():
     print(current_user.email)
-    cats = database.get_all(Cats)
-    all_cats = []
-    for cat in cats:
-        new_cat = {
-            "id": cat.id,
-            "name": cat.name,
-            "price": cat.price,
-            "breed": cat.breed
-        }
+    user=User.query.filter_by(email=current_user.email).first()
+    # keyvalue = database.get_all(KeyValue)
+    print(user.keyvalue)
+    # return json.dumps(list(user.keyvalue))
+    # kv = []
+    # for i in keyvalue:
+    #     k_v = {
+    #         "key": i.key,
+    #         "value": i.value,
+    #     }
 
-        all_cats.append(new_cat)
-    return json.dumps(all_cats), 200
+    #     kv.append(k_v)
+    # return json.dumps(kv), 200
 
 
-@app.route('/add', methods=['POST'])
+@app.route('/add', methods=['POST','GET'])
+@login_required
 def add():
-    data = request.get_json()
-    name = data['name']
-    price = data['price']
-    breed = data['breed']
-
-    database.add_instance(Cats, name=name, price=price, breed=breed)
-    return json.dumps("Added"), 200
+    if request.form:
+        request.form.get('key')
+        key = request.form.get('key')
+        value = request.form.get('value')
+        user = User.query.filter_by(email=current_user.email).first()
+        new_keyvalue = KeyValue(key=key,value=value,user_id=user.id)
+        db.session.add(new_keyvalue)
+        db.session.commit()
+    user=User.query.filter_by(email=current_user.email).first()
+    return render_template('timeline.html',kv=user.keyvalue)
 
 
 @app.route('/remove/<cat_id>', methods=['DELETE'])
