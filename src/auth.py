@@ -49,6 +49,7 @@ def signup_post():
     if password != password2:
         flash('Passwords not matched')
         return redirect(url_for('auth.signup'))
+
     EMAIL_REGEX = re.compile(r'\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b')
     if not EMAIL_REGEX.match(email):
         flash('Please enter a valid email')
