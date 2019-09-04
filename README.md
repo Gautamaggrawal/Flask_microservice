@@ -1,8 +1,9 @@
 # Flask_microservice
 
 ## Installation
-Use the package manager [PIP3](https://pip.pypa.io/en/stable/).
-Install docker on 18.04[Docker](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04)
+*Use the package manager [PIP3](https://pip.pypa.io/en/stable/).*
+
+*Install docker on 18.04[Docker](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04)*
 
 **To run with docker**
 ```bash
