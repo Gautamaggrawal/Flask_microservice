@@ -1,8 +1,8 @@
 from .models import db
 
 
-def get_all(model):
-    data = model.query.all()
+def get_all_for_that_user(model,curr_user):
+    data = model.query.filter_by()
     return data
 
 

@@ -3,14 +3,19 @@
 Key value
 {% endblock %}
 {% block body %}
-    <h1>Add key and value</h1>
+    <h1>Set</h1>
     <form method="POST" action="/add" style="height: 100px">
         <input type="text" name="key" placeholder="Enter Key">
         <input type="text" name="value" placeholder="Enter value">
-        <input type="submit" value="Add">
+        <input type="submit" value="Set">
+    </form>
+    <h1>Get</h1>
+    <form method="POST" action="/get" style="height: 100px">
+        <input type="text" name="key" placeholder="Enter Key">
+        <input type="submit" value="Get">
     </form>
 
-    <h1>All Your Key Values</h1>
+    <h1>List</h1>
     {% for k in kv %}
       <input type="" name="" value="{{k.key}}"><input type="" name="" value="{{k.value}}"><br>
     {% endfor %}

@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required
 from .models import User
 from .models import db
+import re
 
 auth = Blueprint('auth', __name__)
 
@@ -13,10 +14,15 @@ def login():
     return render_template('login.html')
 
 @auth.route('/login', methods=['POST'])
-def login_post():
-    email = request.form.get('username')
+def login_post():    
+    email = request.form.get('email')
     password = request.form.get('password')
     remember = True if request.form.get('remember') else False
+    EMAIL_REGEX = re.compile(r'\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b')
+    if not EMAIL_REGEX.match(email):
+        flash('Please enter a valid email')
+        return redirect(url_for('auth.login')) # if user doesn't exist or password is wrong, reload the page
+
 
     user = User.query.filter_by(email=email).first()
 
@@ -36,10 +42,17 @@ def signup():
 
 @auth.route('/signup', methods=['POST'])
 def signup_post():
-
     email = request.form.get('email')
     name = request.form.get('name')
     password = request.form.get('password')
+    password2 =request.form.get('password2')
+    if password != password2:
+        flash('Passwords not matched')
+        return redirect(url_for('auth.signup'))
+    EMAIL_REGEX = re.compile(r'\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b')
+    if not EMAIL_REGEX.match(email):
+        flash('Please enter a valid email')
+        return redirect(url_for('auth.signup'))
 
     user = User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
 
@@ -60,4 +73,4 @@ def signup_post():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('main.index'))
+    return redirect(url_for('auth.login'))

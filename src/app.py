@@ -10,27 +10,14 @@ app = create_app()
 @app.route('/', methods=['GET'])
 @login_required
 def fetch():
-    print(current_user.email)
     user=User.query.filter_by(email=current_user.email).first()
-    # keyvalue = database.get_all(KeyValue)
-    print(user.keyvalue)
-    # return json.dumps(list(user.keyvalue))
-    # kv = []
-    # for i in keyvalue:
-    #     k_v = {
-    #         "key": i.key,
-    #         "value": i.value,
-    #     }
-
-    #     kv.append(k_v)
-    # return json.dumps(kv), 200
+    return render_template('timeline.html',kv=user.keyvalue)
 
 
 @app.route('/add', methods=['POST','GET'])
 @login_required
 def add():
     if request.form:
-        request.form.get('key')
         key = request.form.get('key')
         value = request.form.get('value')
         user = User.query.filter_by(email=current_user.email).first()
@@ -41,15 +28,13 @@ def add():
     return render_template('timeline.html',kv=user.keyvalue)
 
 
-@app.route('/remove/<cat_id>', methods=['DELETE'])
-def remove(cat_id):
-    database.delete_instance(Cats, id=cat_id)
-    return json.dumps("Deleted"), 200
 
-
-@app.route('/edit/<cat_id>', methods=['PATCH'])
-def edit(cat_id):
-    data = request.get_json()
-    new_price = data['price']
-    database.edit_instance(Cats, id=cat_id, price=new_price)
-    return json.dumps("Edited"), 200
+@app.route('/get', methods=['POST'])
+@login_required
+def get_value():
+    if request.form:
+        key = request.form.get('key')
+        print(key)
+        x=KeyValue.query.filter_by(key=key,user_id=current_user.id)
+        print(x)
+        return render_template('timeline.html',kv=x)
